@@ -218,6 +218,112 @@
             
         </article>
     
+        
+        <article class="postShorten postShorten--thumbnailimg-bottom" itemscope itemType="http://schema.org/BlogPosting">
+            <div class="postShorten-wrap">
+                <div class="postShorten-header">
+                    <h1 class="postShorten-title" itemprop="headline">
+                        
+                                <a class="link-unstyled" href="/2015/10/15/2015-10-15-note-promise/">promise编程学习笔记</a>
+                        
+                    </h1>
+                    <div class="postShorten-meta">
+    <time itemprop="datePublished" content="Thu Oct 15 2015 11:47:50 GMT+0800">
+	
+		    Oct 15, 2015
+    	
+    </time>
+    
+</div>
+                </div>
+                
+                
+                    <div class="postShorten-content" itemprop="articleBody">
+                        <p>来饿了么的第一场前端培训，讲的是promise，虽然只有短短的16分钟，讲的知识还是有一点的。再加上培训之前看了好多promise的博客，也算能总结出来一片promise基础篇了。</p>
+<h4 id="理解promise">理解promise</h4><p>讲一个故事，有爸爸和儿子，爸爸有一天特别想看日出有懒得自己去看，就让儿子拿相机去山顶拍日出，儿子拍拍肩膀说好的，这就是一个primise。但在儿子去拍日出的过程中，如果儿子正好赶上晴天，把照片拍完了拿回家，这就是resolve(成功)，如果那天正好赶上阴天，儿子什么也没拍到只能空着手回家，这就是一个reject(失败)。如果儿子走到半路相机丢了，也只能空着手回家，这是儿子半路发生了意外事件，也会造成reject(失败)。这个故事就是一个promise过程，相当于儿子只给老爸一个承诺，具体的老爸不会坐在家干等儿子回来，老爸在这期间可以抽根烟，看看电视，喝喝茶什么的。</p>
+<h4 id="promise是什么？">promise是什么？</h4><p>promise是一个对象，是用来解决回调函数嵌套的，将异步处理对象和处理规则进行规范化，按照统一的接口来写。</p>
+<h4 id="promise的基本用法">promise的基本用法</h4><pre><code><span class="comment">//promise基本的创建方式</span>
+<span class="keyword">var</span> promise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve,reject</span>)</span>{
+
+});
+</code></pre><p>其中resolve和reject可以看成是两个函数，它们可以传任意的参数。</p>
+<p>promise中内置了许多的方法，其中最常用也是最关键的方法就是then方法，then方法返回的也是一个promise对象，所以then方法支持链式调用，就像jquery的函数一样可以串联多个。</p>
+<h4 id="then函数的使用">then函数的使用</h4><p>基本形式为<br> <figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mise.then(<span class="keyword">on</span>Fulfilled, <span class="keyword">on</span>Rejected);</span><br></pre></td></tr></table></figure></p>
+<p>onFulfilled为resolve(成功后)执行的函数，onRejected代表regect(失败后)的函数</p>
+<pre><code>promise.<span class="keyword">then</span>(<span class="function"><span class="keyword">function</span><span class="params">(value)</span></span>{
+    console.<span class="built_in">log</span>(<span class="keyword">value</span>);
+},
+<span class="function"><span class="keyword">function</span><span class="params">(error)</span></span>{
+    console.<span class="built_in">log</span>(error);
+});
+</code></pre><h4 id="catch函数的使用">catch函数的使用</h4><p>catch函数可以理解就是等价于then函数中的onRejected函数，一般在实际运用的时候都是用catch来代替then中的onRejected。</p>
+<pre><code><span class="keyword">promise</span>.<span class="built_in">then</span>(onFulfilled).<span class="built_in">catch</span>(onRejected);
+</code></pre><h4 id="一个完整的promise例子">一个完整的promise例子</h4><pre><code><span class="keyword">var</span> promise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve,reject</span>)</span>{
+    resolve(成功后传给onFulfilled的值);
+    reject(失败后传给onRejected的值,一般为error);
+});
+
+promise.then(<span class="function"><span class="keyword">function</span>(<span class="params">value</span>)</span>{
+    <span class="built_in">console</span>.log(value); <span class="comment">//处理resolve的值，或对dom操作</span>
+}).catch(<span class="function"><span class="keyword">function</span>(<span class="params">error</span>)</span>{
+    <span class="built_in">console</span>.log(error);
+}); <span class="comment">//结果输出为成功后传给onFulfilled的值</span>
+</code></pre><h4 id="Angular中的promise">Angular中的promise</h4><p>在angular中用$q来提供deferred和promise的实现。Deferred表示一个任务将会在将来被执行。我们可以创建一个Deferred对象通过调用$q的defer()方法。</p>
+<pre><code>var deferred = <span class="variable">$q</span>.defer();
+</code></pre><p>初始化一个任务使其处于pending的状态，这里提到了promise的状态，promise只有两种状态（即pending未被处理过的状态和被处理过的状态）一个任务最终只会有两种结果，成功或失败。</p>
+<p>定义成功时的形式为</p>
+<pre><code>deferred.<span class="built_in">resolve</span>(<span class="string">"success"</span>);
+</code></pre><p>resolve函数中的参数可以是字符串，对象等任意形式的值。</p>
+<p>一般当任务失败时定义的形式为</p>
+<pre><code>deferred.<span class="keyword">reject</span>(<span class="string">"sorry"</span>);
+</code></pre><p>实际应用时更提倡这么用,传入一个错误对象</p>
+<pre><code>deferred.reject(<span class="keyword">new</span> <span class="keyword">error</span>(<span class="string">"sorry"</span>));
+</code></pre><p>then()函数则更像一个处理函数，在上文的故事中就是老爸等儿子回家后调用的函数，主动查看儿子外出拍摄日出的结果。</p>
+<pre><code><span class="keyword">var</span> promise = deferred.promise;
+promise.then(<span class="function"><span class="keyword">function</span><span class="params">(success)</span></span>{
+    conlog.log(<span class="string">"儿子表现不错"</span>);
+}).<span class="keyword">catch</span>(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>{
+    conlog.log(<span class="string">"儿子失败了，问下原因为什么"</span>);
+});
+</code></pre><p>基本流程是这样的但是还有更多API如</p>
+<p>promise.all()</p>
+<p>promise.race()</p>
+<h4 id="promise/A+规范">promise/A+规范</h4><p>一个开放的标准相对于javascript promise的实现。</p>
+<h5 id="1-术语">1.术语</h5><p>promise是一个对象或函数，它包含了then方法并符合promise规范。</p>
+<p>thenable是决定then方法的对象或函数。</p>
+<p>value是任何javascript的值。(包含undefined，primise等)。</p>
+<p>exception是被throw抛出来的值</p>
+<p>reason是一个值解释了promise为什么被拒绝的原因。</p>
+<h5 id="2-要求">2.要求</h5><p>一个promise有三种状态pending，fulfilled，rejected</p>
+<p>pending表示promise未被处理过的状态，这个状态的promise是可以改变的。可以变成fulfilled，也可以变成rejected。</p>
+<p>fulfilled状态不能转换成其他状态，而且必须有一个value。</p>
+<p>rejected状态不能装换为其他状态，而且必须有一个reason。</p>
+<h5 id="3、then方法">3、then方法</h5><p>一个promise必须有then方法来获取返回值或者原因。</p>
+<p>then方法有两个参数。</p>
+<pre><code>promise.<span class="function"><span class="title">then</span><span class="params">(onFulfilled, onRejected)</span></span>
+</code></pre><p>onFulfilled和onFulfilled都必须是一个函数。如果不是函数，执行时将被忽略。</p>
+<p>如果onFulfilled是一个函数:</p>
+<h6 id="它必须在promise_fulfilled后调用，_且promise的value为其第一个参数。">它必须在promise fulfilled后调用， 且promise的value为其第一个参数。</h6><h6 id="它不能在promise_fulfilled前调用。">它不能在promise fulfilled前调用。</h6><h6 id="不能被多次调用。">不能被多次调用。</h6><p>如果onRejected是一个函数：</p>
+<h6 id="它必须在promise_rejected后调用，_且promise的reason为其第一个参数。">它必须在promise rejected后调用， 且promise的reason为其第一个参数。</h6><h6 id="它不能在promise_rejected前调用。">它不能在promise rejected前调用。</h6><h6 id="不能被多次调用。-1">不能被多次调用。</h6><p>then方法可以被调用多次。</p>
+<p>then方法必须返回一个promise对象。</p>
+
+                        
+                            
+
+                        
+                        
+                            <p>
+                                <a href="/2015/10/15/2015-10-15-note-promise/#post-footer" class="postShorten-excerpt_link link">
+                                    注释和共享
+                                </a>
+                            </p>
+                        
+                    </div>
+                
+            </div>
+            
+        </article>
+    
     <div class="pagination-bar">
     <ul class="pagination">
         
